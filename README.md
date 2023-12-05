@@ -6,9 +6,9 @@ Cardio Catch Diseases is a company specialized in detecting heart disease in the
 Currently, the diagnosis of cardiovascular disease is manually made by a team of specialists. The current accuracy of the diagnosis varies between 55% and 65%, due to the complexity of the diagnosis and also the fatigue of the team who take turns to minimize the risks. The cost of each diagnosis, including the devices and the payroll of the analysts, is around $1,000.00.
 
 The price of the diagnosis, paid by the client, varies according to the precision achieved by the team of specialists.
-> - 50%: the patient doesn't need to pay it;
-> - If 55%: the patient pays R$ 500,00
-> - Each 5% increase: the payment increases R$ 500.00
+> - **50%**: the patient doesn't need to pay it;
+> - If **55%**: the patient pays **R$ 500,00**
+> - Each **5% increase**: the payment increases **R$ 500.00**
 
 **The goal is to create a classification tool to improve this diagnosis in order to reduce costs and increase the overall profit.**
 
@@ -17,8 +17,8 @@ The price of the diagnosis, paid by the client, varies according to the precisio
 ## About the dataset
 
 There are 3 types of input features:
-> - 70.000 rows
-> - Each row contains 11 features and 1 target
+> - **70.000** rows
+> - Each row contains **11 features** and **1 target**
 
 > - Columns:
 - **Objective**: factual information;
@@ -43,35 +43,35 @@ There are 3 types of input features:
 
 ## Data Filtering
 
-- Consider correct data with weight >= 40;
-- Consider correct data with 110 <= height <= 210;
-- Consider correct data with 90 <= systolic_pressure <= 210;
-- Consider correct data with 65 <= diastolic_pressure <= 150;
+- Consider correct data with **weight >= 40**;
+- Consider correct data with **110 <= height <= 210**;
+- Consider correct data with **90 <= systolic_pressure <= 210**;
+- Consider correct data with **65 <= diastolic_pressure <= 150**;
 
 
 ## Feature Engineering
 Features to create:
-- Create BMI (Body Mass Index): weight / ((height * height) / 10000 )
-- Create weight_status:
-    - underweight: if BMI < 18.5 
-    - normal: if (BMI >= 18.5) and (BMI <= 29.4)
-    - overweight: if (BMI >= 25) and (BMI <= 29.9)
-    - obese: if BMI > 29.9
-- Create blood_pressure_s:
-    - low: if (systolic <= 90) and (diastolic <= 60)
-    - normal: if ((systolic > 90) and (systolic < 120)) and ((diastolic > 60) and (diastolic < 80))
-    - elevated: if ((systolic >= 120) and (systolic <= 120)) and (diastolic < 80)
-    - high stage one: if ((systolic >= 130) and (systolic <= 139)) or ((diastolic >= 80) and (diastolic <=89))
-    - high stage two: if (systolic >= 140) or (diastolic >= 90)
-    - hypertensive crisis: if None above satisfied
+- Create **BMI** (Body Mass Index): **weight** / ((**height** * **height**) / 10000 )
+- Create **weight_status**:
+    - `underweight`: if BMI < 18.5 
+    - `normal`: if (BMI >= 18.5) and (BMI <= 29.4)
+    - `overweight`: if (BMI >= 25) and (BMI <= 29.9)
+    - `obese`: if BMI > 29.9
+- Create **blood_pressure_s**:
+    - `low`: if (systolic <= 90) and (diastolic <= 60)
+    - `normal`: if ((systolic > 90) and (systolic < 120)) and ((diastolic > 60) and (diastolic < 80))
+    - `elevated`: if ((systolic >= 120) and (systolic <= 120)) and (diastolic < 80)
+    - `high stage one`: if ((systolic >= 130) and (systolic <= 139)) or ((diastolic >= 80) and (diastolic <=89))
+    - `high stage two`: if (systolic >= 140) or (diastolic >= 90)
+    - `hypertensive crisis`: if None above satisfied
 
-- Create age_y: age/365
-- Create gender_s: map(gender, {1:'female',2:'male'})
-- Create cholesterol_s: map(cholesterol, {1: 'normal', 2: 'above normal', 3: 'well above normal'})
-- Create gluc_s: map(gluc, {1: 'normal', 2: 'above normal', 3: 'well above normal'})
-- Create smoke_s: map(smoke, {1: 'smoking', 0: 'non-smoking'})
-- Create alcohol_s: map(alcohol, {1: 'alcoolic', 0: 'non alcoolic'})
-- Create active_s:map(active, {1: 'active', 0: 'non active'})
+- Create `age_y`: `age` / 365
+- Create `gender_s`: map(`gender`, **{1:'female',2:'male'}**)
+- Create `cholesterol_s`: map(`cholesterol`, **{1: 'normal', 2: 'above normal', 3: 'well above normal'}**)
+- Create `gluc_s`: map(`gluc`, **{1: 'normal', 2: 'above normal', 3: 'well above normal'}**)
+- Create `smoke_s`: map(`smoke`, **{1: 'smoking', 0: 'non-smoking'}**)
+- Create `alcohol_s`: map(`alcohol`, **{1: 'alcoolic', 0: 'non alcoolic'}**)
+- Create `active_s`:map(`active`, **{1: 'active', 0: 'non active'}**)
 
 
 ## Univariate Analysis
@@ -82,10 +82,10 @@ Features to create:
 ![](img/univariate_analysis.png)
 
 
-- HEIGHT of MALE is a little higher than FEMALE;
-- CHOLESTEROL concentrated in 1.0;
-- ALCOHOL concentrated in 0.0;
-- SMOKE concentrated in 0.0;
+- **HEIGHT** of **MALE** is a little **higher** than **FEMALE**;
+- **CHOLESTEROL** concentrated in **1.0**;
+- **ALCOHOL** concentrated in **0.0**;
+- **SMOKE** concentrated in **0.0**;
 
 > Part 2
 
@@ -94,8 +94,8 @@ Features to create:
 
 
 
-- FEMALE is concentrated in "high stage one" and "high stage two" in BLOOD PRESSURE;
-- FEMALE is concentrated in "OBESE" and "NORMAL" in WEIGHT_S;
+- **FEMALE** is concentrated in `"high stage one"` and `"high stage two"` in **BLOOD PRESSURE**;
+- **FEMALE** is concentrated in `"OBESE"` and `"NORMAL"` in **WEIGHT_S**;
 
 
 
@@ -123,28 +123,29 @@ Features to create:
 
 
 > Key points:
-- GENDER and HEIGHT: moderate positive correlation
-- GLUCOSE and CHOLESTEROL: moderate positive correlation
-- CARDIO and SYSTOLIC: moderate positive correlation
-- CARDIO and DISTOLIC: high positive correlation
+- **GENDER** and **HEIGHT**: `moderate positive correlation`
+- **GLUCOSE** and **CHOLESTEROL**: `moderate positive correlation`
+- **CARDIO** and **SYSTOLIC**: `moderate positive correlation`
+- **CARDIO** and **DISTOLIC**: `high positive correlation`
 
 
 
 ## Feature Selection
 
-- Columns selected: ['gender','height','weight','systolic','diastolic','cholesterol','gluc','smoke','alcohol','active','cardio','bmi','weight_s','blood_pressure_s','age_y']
+- Columns selected: `['gender','height','weight','systolic','diastolic','cholesterol','gluc','smoke','alcohol','active','cardio','bmi','weight_s','blood_pressure_s','age_y']`
 
 
 ## Train/Test Split
-- 25% to TEST
-- TARGET: 'cardio'
+
+- **25%** to TEST
+- TARGET: **'cardio'**
 
 
 
 ## Data Preparation
-- MinMax Scaler fit on TRAIN: ['height','weight','systolic','diastolic','age_y','bmi']
-- MinMax Scaler fit_transform on TEST (avoid data leakage)
-- OneHot Encoding: ['weight_s','blood_pressure_s']
+- **MinMax** Scaler **fit** on **TRAIN**: `['height','weight','systolic','diastolic','age_y','bmi']`
+- **MinMax** Scaler **fit_transform** on **TEST** (avoid data leakage)
+- **OneHot** Encoding: `['weight_s','blood_pressure_s']`
 
 
 
@@ -154,12 +155,12 @@ Features to create:
 ![](img/model_comparison.PNG)
 
 
-- Tested some models like: SGDClassifier, RandomForestClassifier, LogisticRegression, XGBClassifier, KNeighborsClassifier
-- All models were tested with 10-fold (cross validation)
-- Verify Brier Loss:
-    - Brier Score Loss (Random Forest): 0.1900100348936879
-    - Brier Score Loss (XGB): 0.20333894554238907
-    - Brier Score Loss (LGBM): 0.1892393539297594
+- Tested some models like: `SGDClassifier, RandomForestClassifier, LogisticRegression, XGBClassifier, KNeighborsClassifier`
+- All models were tested with **10-fold** (cross validation)
+- Verify **Brier Loss**:
+    - Brier Score Loss (**Random Forest**): `0.1900100348936879`
+    - Brier Score Loss (**XGB**): `0.20333894554238907`
+    - Brier Score Loss (**LGBM**): `0.1892393539297594`
 
 
 ![](img/confusion_matrix_models.png)
@@ -168,7 +169,7 @@ Features to create:
 
 ## Model Chosen
 
-- LGBM: Best Brier score and trained with full dataset
+- `LGBM`: Best Brier score and trained with full dataset
 
 
 ![](img/lgbm_full.PNG)
@@ -198,7 +199,7 @@ Features to create:
 
 ## Business Performance
 
-- Got the Cross Validation Score for the best model (tuned) with all dataset and 10-fold;
+- Got the **Cross Validation Score** for the best model (**tuned**) with **all dataset** and **10-fold**;
 
  - Considering:
     - price_per_percent = 500/5
