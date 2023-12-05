@@ -10,7 +10,13 @@ The price of the diagnosis, paid by the client, varies according to the precisio
 > - If **55%**: the patient pays **R$ 500,00**
 > - Each **5% increase**: the payment increases **R$ 500.00**
 
-**The goal is to create a classification tool to improve this diagnosis in order to reduce costs and increase the overall profit.**
+**The goal was to create a classification tool to improve this diagnosis in order to reduce costs and increase the overall profit.**
+
+So far, our model presents these values:
+
+- **Profit**:
+    - **Best Scenario**: `$59,697,433.28`
+    - **Worst Scenario**: `$39,992,207.97`
 
 
 
