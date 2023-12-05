@@ -1,135 +1,188 @@
-# Cardio Catch Diseases
+# The Cardio Catch Disease - Detection
 
-## Predicting cardiovascular diseases
-
-![](img_banner_title.png)
-
-# 1. Business Problem.
 
 Cardio Catch Diseases is a company specialized in detecting heart disease in the early stages. Its business model lies in offering an early diagnosis of cardiovascular disease for a certain price.
 
 Currently, the diagnosis of cardiovascular disease is manually made by a team of specialists. The current accuracy of the diagnosis varies between 55% and 65%, due to the complexity of the diagnosis and also the fatigue of the team who take turns to minimize the risks. The cost of each diagnosis, including the devices and the payroll of the analysts, is around $1,000.00.
 
 The price of the diagnosis, paid by the client, varies according to the precision achieved by the team of specialists.
+> - 50%: the patient doesn't need to pay it;
+> - If 55%: the patient pays R$ 500,00
+> - Each 5% increase: the payment increases R$ 500.00
 
-| Exam Accuracy | Price          | Rules                                    | Example                         |
-|:--------------|:---------------|:-----------------------------------------|:--------------------------------|
-| Above 50%     | min \$500\.00  | \+\$500 for each additional 5% precision | Precision = 55% \-> \$1,000\.00 |
-| Up to 50%     | $0\.00         | N/A                                      | N/A                             |
-
-Thus, we see that **different values in the exam precision**, given by the team of specialists, make the company either have a profitable operation, revenue greater than the cost, or an operation with a loss, revenue less than the cost. This instability of the diagnosis makes the company to have an **unpredictable cashflow**.
-
-# 2. Business Assumptions.
-
-The assumptions about the business problem is as follows:
-
-- **CVDs are the number 1 cause of death globally**: more people die annually from CVDs than from any other cause.
-- An estimated **17.9 million** people died from CVDs in 2016, representing 31% of all global deaths. Of these deaths, 85% are due to heart attack and stroke.
-- Over three quarters of CVD deaths take place in **low- and middle-income countries**.
-- Out of the **17 million** premature deaths (under the age of 70) due to noncommunicable diseases in 2015, **82%** are in low- and middle-income countries, and 37% are caused by CVDs.
-- Most cardiovascular diseases can be **prevented by addressing behavioural risk factors** such as tobacco use, unhealthy diet and obesity, physical inactivity and harmful use of alcohol using population-wide strategies.
-- People with cardiovascular disease or who are at high cardiovascular risk (due to the presence of one or more risk factors such as hypertension, diabetes, hyperlipidaemia or already established disease) **need early detection and management** using counselling and medicines, as appropriate.
-
-PS 1: All the references are stated at the end of this README.
-
-PS 2: You can find useful information at **section 1** of my [notebook](#).
+**The goal is to create a classification tool to improve this diagnosis in order to reduce costs and increase the overall profit.**
 
 
-# 3. Solution Strategy
 
-My strategy to solve this challenge was:
+## About the dataset
 
-**Step 01. Data Description:** My goal is to use statistics metrics to identify data outside the scope of business.
+There are 3 types of input features:
+> - 70.000 rows
+> - Each row contains 11 features and 1 target
 
-**Step 02. Feature Engineering:** Derive new attributes based on the original variables to better describe the phenomenon that will be modeled.
-
-**Step 03. Data Filtering:** Filter rows and select columns that do not contain information for modeling or that do not match the scope of the business.
-
-**Step 04. Exploratory Data Analysis:** Explore the data to find insights and better understand the impact of variables on model learning.
-
-**Step 05. Data Preparation:** Prepare the data so that the Machine Learning models can learn the specific behavior.
-
-**Step 06. Feature Selection:** Selection of the most significant attributes for training the model.
-
-**Step 07. Machine Learning Modelling:** Machine Learning model training
-
-**Step 08. Hyperparameter Fine Tunning:** Choose the best values for each of the parameters of the model selected from the previous step.
-
-**Step 09. Convert Model Performance to Business Values:** Convert the performance of the Machine Learning model into a business result.
-
-**Step 10. Deploy Modelo to Production:** Publish the model in a cloud environment so that other people or services can use the results to improve the business decision.
-
-# 4. Top 3 Data Insights
-
-**Hypothesis 01:** The cases of heart diseases does not significantly depend on the height.
-
-**False.** As observed, up to ~165 cm there are significantly more cases of heart diseases. Then, above this height, there are fewer cases.
-
-**Hypothesis 02:** The are more cases of heart diseases for people who smokes than for people who does not.
-
-**False.** As observed, the great majority of cases are among people who doesn't smoke.
-
-**Hypothesis 03:** The are more cases of heart diseases for people who intakes alcohol than for people who does not.
-
-**False.** As observed, the great majority of cases are among people who doesn't intake alcohol.
+> - Columns:
+- **Objective**: factual information;
+- **Examination**: results of medical examination;
+- **Subjective**: information given by the patient.
+- **Features**:
+    - **Age** | Objective Feature | age | int (days)
+    - **Height** | Objective Feature | height | int (cm) |
+    - **Weight** | Objective Feature | weight | float (kg) |
+    - **Gender** | Objective Feature | gender | categorical code |
+    - **Systolic blood pressure** | Examination Feature | ap_hi | int |
+    - **Diastolic blood pressure** | Examination Feature | ap_lo | int |
+    - **Cholesterol** | Examination Feature | cholesterol | 1: normal, 2: above normal, 3: well above normal |
+    - **Glucose** | Examination Feature | gluc | 1: normal, 2: above normal, 3: well above normal |
+    - **Smoking** | Subjective Feature | smoke | binary |
+    - **Alcohol intake** | Subjective Feature | alco | binary |
+    - **Physical activity** | Subjective Feature | active | binary |
+    - **Presence or absence of cardiovascular disease** | Target Variable | cardio | binary |
+ All of the dataset values were collected at the moment of medical examination.
 
 
-# 5. Machine Learning Model Applied
-Tests were made using different algorithms.
 
-# 6. Machine Learning Modelo Performance
-The chosen algorithm was the **CatBoost Classifier**. In addition, I made a performance calibration on it.
+## Data Filtering
 
-#### Precision, Recall, ROC AUC and other metrics
+![](img/quantile_verification.PNG)
 
-These are the metrics obtained from the test set.
-
-| precision | recall  | f1\-score | roc auc | cohen kappa | accuracy |
-|-----------|---------|-----------|---------|-------------|----------|
-| 0\.7350   | 0\.7313 | 0\.7331   | 0\.7951 | 0\.4605     | 0\.7303  |
+- Consider correct data with weight >= 40;
+- Consider correct data with 110 <= height <= 210;
+- Consider correct data with 90 <= systolic_pressure <= 210;
+- Consider correct data with 65 <= diastolic_pressure <= 150;
 
 
-The summary below shows the metrics comparison after running a cross validation score with stratified K-Fold with 10 splits in the full data set.
+## Feature Engineering
+Features to create:
+- Create BMI (Body Mass Index): weight / ((height * height) / 10000 )
+- Create weight_status:
+    - underweight: if BMI < 18.5 
+    - normal: if (BMI >= 18.5) and (BMI <= 29.4)
+    - overweight: if (BMI >= 25) and (BMI <= 29.9)
+    - obese: if BMI > 29.9
+- Create blood_pressure_s:
+    - low: if (systolic <= 90) and (diastolic <= 60)
+    - normal: if ((systolic > 90) and (systolic < 120)) and ((diastolic > 60) and (diastolic < 80))
+    - elevated: if ((systolic >= 120) and (systolic <= 120)) and (diastolic < 80)
+    - high stage one: if ((systolic >= 130) and (systolic <= 139)) or ((diastolic >= 80) and (diastolic <=89))
+    - high stage two: if (systolic >= 140) or (diastolic >= 90)
+    - hypertensive crisis: if None above satisfied
 
-|                                            | Avg Precision             | Avg Recall                | Avg f1\-score             | Avg ROC AUC               |
-|--------------------------------------------|---------------------------|---------------------------|---------------------------|---------------------------|
-| LGBM Classifier                            | 0\.7535 \(\+/\- 0\.0087\) | 0\.7021 \(\+/\- 0\.0117\) | 0\.7269 \(\+/\- 0\.0095\) | 0\.7977 \(\+/\- 0\.0090\) |
-| LGBM Classifier \(Tuned HP\)               | 0\.7522 \(\+/\- 0\.0080\) | 0\.7039 \(\+/\- 0\.0144\) | 0\.7272 \(\+/\- 0\.0092\) | 0\.7967 \(\+/\- 0\.0076\) |
-| LGBM Classifier \(Tuned HP \+ Calibrated\) | 0\.7557 \(\+/\- 0\.0103\) | 0\.7002 \(\+/\- 0\.0163\) | 0\.7269 \(\+/\- 0\.0097\) | 0\.7974 \(\+/\- 0\.0078\) |
-
-Although the **Tuned HP + Calibrated** model has a slightly lower f1-score and recall, it has a higher precision which is fair enough for our project needs. In addition, for being calibrated, in the future predictions it will be more stable and confident which is good for both business and patients.
-
-
-# 7. Business Results
-
-Let's recap the pricing model. The price of the diagnosis, paid by the client, varies according to the precision achieved by the team of specialists.
-
-| Exam Accuracy | Price          | Rules                                    | Example                         |
-|:--------------|:---------------|:-----------------------------------------|:--------------------------------|
-| Above 50%     | min \$500\.00  | \+\$500 for each additional 5% precision | Precision = 55% \-> \$1,000\.00 |
-| Up to 50%     | $0\.00         | N/A                                      | N/A                             |
-
-
-Our full original data set contains the records of 70,000 patients. Suppose we were to make them go through the clinic procedure to check if they have a cardiovascular disease, our model have reached a **precision** that ranges **from 74.54% to 76.6%**, which is higher than the 55% to 65% that we have on today's procedures. Thus, translating it to business numbers.
-
-|                        | Best              | Worst             |
-|:-----------------------|------------------:|------------------:|
-| Our model (TO BE)      | \$186,164,981.89  | \$171,777,607.99  |
-| Today (AS IS)          | \$105,000,000.00  | \$35,000,000.00   |
+- Create age_y: age/365
+- Create gender_s: map(gender, {1:'female',2:'male'})
+- Create cholesterol_s: map(cholesterol, {1: 'normal', 2: 'above normal', 3: 'well above normal'})
+- Create gluc_s: map(gluc, {1: 'normal', 2: 'above normal', 3: 'well above normal'})
+- Create smoke_s: map(smoke, {1: 'smoking', 0: 'non-smoking'})
+- Create alcohol_s: map(alcohol, {1: 'alcoolic', 0: 'non alcoolic'})
+- Create active_s:map(active, {1: 'active', 0: 'non active'})
 
 
-This means that having a portfolio of 70k patients that would go through the clinical procedure to check whether they have or not a cardiovascular disease, in the **worst business scenario** the portfolio would generate a profit of **\$171.7 million** and in the **best scenario \$186.2 million**, in contrast to today's procedure that at its best has an accuracy of 65% and would generate a total of \$105 million, that's **a difference of \$81.2 million!**
+## Univariate Analysis
+> Part 1
+
+![](img/univariate_analysis.png)
+
+- HEIGHT of MALE is a little higher than FEMALE;
+- CHOLESTEROL concentrated in 1.0;
+- ALCOHOL concentrated in 0.0;
+- SMOKE concentrated in 0.0;
+
+> Part 2
+
+![](img/univariate_analysis2.png)
+
+- FEMALE is concentrated in "high stage one" and "high stage two" in BLOOD PRESSURE;
+- FEMALE is concentrated in "OBESE" and "NORMAL" in WEIGHT_S;
 
 
-# 8. Conclusions
 
-# 9. Lessons Learned
+## Hipothesis Evaluation
 
-# 10. Next Steps to Improve
+| ID  | Hypothesis                                                                                 | Conclusion |
+|:---:|:-----------------------------------------------------------------------------------------|:------------|
+ H1 | we have more cardio disease in male individuals then female                   |  TRUE |
+ H2 | we have more cardio diseases in individuals with age higher than the average  |  TRUE |
+ H3 | In proportion, individuals with cholesterol 2 have more cardio disease than 1 |  TRUE |
+ H4 | In proportion, individuals with cholesterol 3 have more cardio disease than 2 |  TRUE |
+ H5 | In proportion, individuals with alcohol 1 have more cardio disease than 0     |  FALSE |
+ H6 | In proportion, individuals with smoke 1 have more cardio disease than 0       |  FALSE |
+ H7 | In proportion, individuals with active 1 have less cardio disease than 0      |  TRUE |
+ H8 | In proportion, individuals with glucose 2 have more cardio disease than 1     |  TRUE |
+ H9 | In proportion, individuals with glucose 3 have more cardio disease than 2     |  FALSE |
 
-**1.** **Develop an app** that intakes a portfolio of patients and assigns for each patient its respective probability of presenting a cardiovascular disease.
 
-**2.** **Run a Design Discovery** to uncover facts that could be missing in our analysis in order to enrich the data that we have and improve the model performance.
 
-**3.** Build a **model retraining pipeline**.
 
+## Multivariate analysis
+
+![](img/multivariate_analysis.PNG)
+
+> Key points:
+- GENDER and HEIGHT: moderate positive correlation
+- GLUCOSE and CHOLESTEROL: moderate positive correlation
+- CARDIO and SYSTOLIC: moderate positive correlation
+- CARDIO and DISTOLIC: high positive correlation
+
+
+
+## Feature Selection
+
+- Columns selected: ['gender','height','weight','systolic','diastolic','cholesterol','gluc','smoke','alcohol','active','cardio','bmi','weight_s','blood_pressure_s','age_y']
+
+
+## Train/Test Split
+- 25% to TEST
+- TARGET: 'cardio'
+
+## Data Preparation
+- MinMax Scaler fit on TRAIN: ['height','weight','systolic','diastolic','age_y','bmi']
+- MinMax Scaler fit_transform on TEST (avoid data leakage)
+- OneHot Encoding: ['weight_s','blood_pressure_s']
+
+## Model
+
+![](img/classifiers_tested.PNG)
+
+- Tested some models and compared each metric
+- Verify Brier Loss: (XGBoost): 0.001572 and  (CatBoost): 0.0025128
+
+## Tuning
+
+![](img/model_tuned.PNG)
+
+- Tested with **RandomizedSearch**
+
+## Calibration
+
+![](img/calibration_curve.PNG)
+
+- Verify the probability distributions to predict
+
+
+## Cross-Validation - all performed models
+|Model 	| Precision	|Recall	| F1-Score | Cohen-Kappa|
+|:------:|:--------:|:-----:|:--------:|:---------:|
+XGBClassifier | 0.9797 +/- 0.0045 | 0.9427 +/- 0.0067 | 0.9608	+/- 0.0034 | 0.9605	+/- 0.0034|
+Tuned XGBClassifier | 0.9762 +/- 0.0072 | 0.9453 +/- 0.0092 | 0.9605 +/-0.0046 | 0.9601 +/- 0.0047|
+Calibrated XGBClassifier | 0.9722 +/- 0.0022 | 0.9573 +/- 0.0056 | 0.9646 +/- 0.0023 | 0.9644 +/- 0.0023 |
+
+- It was tested with 10 folds
+
+## Business Performance
+ With 6354407 transactions (Fraud = 8213 and Non-Fraud = 6362620):
+
+- Receive **25%** of the value of each transaction that is truly detected as fraud (true positives).
+- Receive **5%** of the value of each transaction detected as fraud, but the transaction is truly legitimate (false positives).
+- Refund **100%** of the value to the customer, for each transaction detected as legitimate, however the transaction is truly a fraud (false negatives).
+
+> Considering the parameters:
+- Median amount of a transaction: **$74,871.94** (we're using the median because the amount distribution is highly skewed);
+- Portfolio: **6,362,620** transactions (fraudulent + non fraudulent)
+
+- TP amount = 0.25 * median_amount * TP_transactions;
+- FP amount = 0.05 * median_amount * FP_transactions;
+- FN amount =  median_amount * FN_transactions;
+
+ - Gross Value = TP amount + FP amount - FN amount
+
+- **Best Scenario: `$1,007,761,121.63`**
+- **Worst Scenario: `$1,265,581,592.83`**
