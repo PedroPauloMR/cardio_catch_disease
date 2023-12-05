@@ -155,6 +155,7 @@ Features to create:
 
 
 - Tested some models like: SGDClassifier, RandomForestClassifier, LogisticRegression, XGBClassifier, KNeighborsClassifier
+- All models were tested with 10-fold (cross validation)
 - Verify Brier Loss:
     - Brier Score Loss (Random Forest): 0.1900100348936879
     - Brier Score Loss (XGB): 0.20333894554238907
@@ -183,39 +184,51 @@ Features to create:
 ![](img/model_tuned2.PNG)
 
 
+## ROC Curve
 
-## Calibration
+![](img/roc_curve.png)
 
-![](img/calibration_curve.PNG)
+## Calibrated Model
 
-- Verify the probability distributions to predict
+- It not performed well. So, LGBM Tuned remains the best
+
+![](img/model_calibrated.PNG)
 
 
-## Cross-Validation - all performed models
-|Model 	| Precision	|Recall	| F1-Score | Cohen-Kappa|
-|:------:|:--------:|:-----:|:--------:|:---------:|
-XGBClassifier | 0.9797 +/- 0.0045 | 0.9427 +/- 0.0067 | 0.9608	+/- 0.0034 | 0.9605	+/- 0.0034|
-Tuned XGBClassifier | 0.9762 +/- 0.0072 | 0.9453 +/- 0.0092 | 0.9605 +/-0.0046 | 0.9601 +/- 0.0047|
-Calibrated XGBClassifier | 0.9722 +/- 0.0022 | 0.9573 +/- 0.0056 | 0.9646 +/- 0.0023 | 0.9644 +/- 0.0023 |
-
-- It was tested with 10 folds
 
 ## Business Performance
- With 6354407 transactions (Fraud = 8213 and Non-Fraud = 6362620):
 
-- Receive **25%** of the value of each transaction that is truly detected as fraud (true positives).
-- Receive **5%** of the value of each transaction detected as fraud, but the transaction is truly legitimate (false positives).
-- Refund **100%** of the value to the customer, for each transaction detected as legitimate, however the transaction is truly a fraud (false negatives).
+- Got the Cross Validation Score for the best model (tuned) with all dataset and 10-fold;
 
-> Considering the parameters:
-- Median amount of a transaction: **$74,871.94** (we're using the median because the amount distribution is highly skewed);
-- Portfolio: **6,362,620** transactions (fraudulent + non fraudulent)
+ - Considering:
+    - price_per_percent = 500/5
+    - baseline = 50
+    - number_of_pacients = 70000
 
-- TP amount = 0.25 * median_amount * TP_transactions;
-- FP amount = 0.05 * median_amount * FP_transactions;
-- FN amount =  median_amount * FN_transactions;
+- LGBM Tuned Model:
+    - model_accuracy = cross_val_scores.mean()
+    - deviation = cross_val_scores.std() * 2
+    - accuracy_lower = (model_accuracy - deviation) * 100
+    - accuracy_upper = (model_accuracy + deviation) * 100
+    - percent_difference_lower = accuracy_lower - baseline
+    - percent_difference_upper = accuracy_upper - baseline
+    - amount_best_scenario = percent_difference_upper * price_per_percent * number_of_pacients
+    - amount_worst_scenario = percent_difference_lower * price_per_percent * number_of_pacients
 
- - Gross Value = TP amount + FP amount - FN amount
+- Baseline Model (Current Diagnosis Tool):
+    - baseline_today_lower = 55
+    - baseline_today_upper = 65
+    - amount_best_baseline_scenario = (65 - baseline) * price_per_percent * num_pacients
+    - amount_worst_baseline_scenario = (55 - baseline) * price_per_percent * num_pacients
 
-- **Best Scenario: `$1,007,761,121.63`**
-- **Worst Scenario: `$1,265,581,592.83`**
+
+| Model  |  Best Scenario  |  Worst Scenario  |
+|:-----:|:----------------:|:----------------:|
+|  LGBM TUNED  |  $164,697,433.28  |  $144,992,207.97|
+|  BASELINE  |  $105,000,000.00  |  $35,000,000.00|
+|  Profit  |  $59,697,433.28  |  $39,992,207.97|
+
+
+![](img/scenarios.PNG)
+
+
