@@ -202,25 +202,25 @@ Features to create:
 - Got the **Cross Validation Score** for the best model (**tuned**) with **all dataset** and **10-fold**;
 
  - Considering:
-    - price_per_percent = 500/5
-    - baseline = 50
-    - number_of_pacients = 70000
+    - `price_per_percent` = 500/5
+    - `baseline` = 50
+    - `number_of_pacients` = 70000
 
 - LGBM Tuned Model:
-    - model_accuracy = cross_val_scores.mean()
-    - deviation = cross_val_scores.std() * 2
-    - accuracy_lower = (model_accuracy - deviation) * 100
-    - accuracy_upper = (model_accuracy + deviation) * 100
-    - percent_difference_lower = accuracy_lower - baseline
-    - percent_difference_upper = accuracy_upper - baseline
-    - amount_best_scenario = percent_difference_upper * price_per_percent * number_of_pacients
-    - amount_worst_scenario = percent_difference_lower * price_per_percent * number_of_pacients
+    - `model_accuracy` = cross_val_scores.mean()
+    - `deviation` = cross_val_scores.std() * 2
+    - `accuracy_lower` = (model_accuracy - deviation) * 100
+    - `accuracy_upper` = (model_accuracy + deviation) * 100
+    - `percent_difference_lower` = accuracy_lower - baseline
+    - `percent_difference_upper` = accuracy_upper - baseline
+    - `amount_best_scenario` = percent_difference_upper * price_per_percent * number_of_pacients
+    - `amount_worst_scenario` = percent_difference_lower * price_per_percent * number_of_pacients
 
 - Baseline Model (Current Diagnosis Tool):
-    - baseline_today_lower = 55
-    - baseline_today_upper = 65
-    - amount_best_baseline_scenario = (65 - baseline) * price_per_percent * num_pacients
-    - amount_worst_baseline_scenario = (55 - baseline) * price_per_percent * num_pacients
+    - `baseline_today_lower` = 55
+    - `baseline_today_upper` = 65
+    - `amount_best_baseline_scenario` = (65 - baseline) * price_per_percent * num_pacients
+    - `amount_worst_baseline_scenario` = (55 - baseline) * price_per_percent * num_pacients
 
 
 | Model  |  Best Scenario  |  Worst Scenario  |
