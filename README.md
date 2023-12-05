@@ -43,8 +43,6 @@ There are 3 types of input features:
 
 ## Data Filtering
 
-![](img/quantile_verification.PNG)
-
 - Consider correct data with weight >= 40;
 - Consider correct data with 110 <= height <= 210;
 - Consider correct data with 90 <= systolic_pressure <= 210;
@@ -77,9 +75,12 @@ Features to create:
 
 
 ## Univariate Analysis
+
 > Part 1
 
+
 ![](img/univariate_analysis.png)
+
 
 - HEIGHT of MALE is a little higher than FEMALE;
 - CHOLESTEROL concentrated in 1.0;
@@ -88,7 +89,10 @@ Features to create:
 
 > Part 2
 
+
 ![](img/univariate_analysis2.png)
+
+
 
 - FEMALE is concentrated in "high stage one" and "high stage two" in BLOOD PRESSURE;
 - FEMALE is concentrated in "OBESE" and "NORMAL" in WEIGHT_S;
@@ -114,7 +118,9 @@ Features to create:
 
 ## Multivariate analysis
 
-![](img/multivariate_analysis.PNG)
+
+![](img/multivariate_analysis.png)
+
 
 > Key points:
 - GENDER and HEIGHT: moderate positive correlation
@@ -133,23 +139,50 @@ Features to create:
 - 25% to TEST
 - TARGET: 'cardio'
 
+
+
 ## Data Preparation
 - MinMax Scaler fit on TRAIN: ['height','weight','systolic','diastolic','age_y','bmi']
 - MinMax Scaler fit_transform on TEST (avoid data leakage)
 - OneHot Encoding: ['weight_s','blood_pressure_s']
 
+
+
 ## Model
 
-![](img/classifiers_tested.PNG)
 
-- Tested some models and compared each metric
-- Verify Brier Loss: (XGBoost): 0.001572 and  (CatBoost): 0.0025128
+![](img/model_comparison.PNG)
+
+
+- Tested some models like: SGDClassifier, RandomForestClassifier, LogisticRegression, XGBClassifier, KNeighborsClassifier
+- Verify Brier Loss:
+    - Brier Score Loss (Random Forest): 0.1900100348936879
+    - Brier Score Loss (XGB): 0.20333894554238907
+    - Brier Score Loss (LGBM): 0.1892393539297594
+
+
+![](img/confusion_matrix_models.png)
+
+
+
+## Model Chosen
+
+- LGBM: Best Brier score and trained with full dataset
+
+
+![](img/lgbm_full.PNG)
+
+
 
 ## Tuning
 
 ![](img/model_tuned.PNG)
 
 - Tested with **RandomizedSearch**
+
+![](img/model_tuned2.PNG)
+
+
 
 ## Calibration
 
